@@ -45,3 +45,8 @@ Bu laboratuvarın temel amacı, bir web sayfasını sadece görsel olarak değil
    ```
 3. Tarayıcıda şu adresi açın: `http://localhost:5173`
 
+##  Proje Önizlemesi(Lighthouse Değerlendirmesi)
+
+![Light Görseli](src/photos/IMG_20240608_2219153.jpg)
+
+
