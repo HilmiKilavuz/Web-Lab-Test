@@ -47,6 +47,6 @@ Bu laboratuvarın temel amacı, bir web sayfasını sadece görsel olarak değil
 
 ##  Proje Önizlemesi(Lighthouse Değerlendirmesi)
 
-![Light Görseli](src/photos/IMG_20240608_2219153.jpg)
+![Light Görseli](src/photos/lighthouse.png)
 
 
