@@ -56,7 +56,7 @@ section h2 {
 
 /* Layout */
 header {
-  padding: var(--space-md) var(--space-xl);
+  padding: var(--space-md);
   background: hsla(220, 20%, 10%, 0.8);
   backdrop-filter: blur(10px);
   position: sticky;
@@ -64,8 +64,8 @@ header {
   z-index: 100;
   border-bottom: 1px solid var(--color-border);
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: var(--space-sm);
   align-items: center;
 }
 
@@ -77,15 +77,19 @@ header {
 
 nav ul {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
   list-style: none;
-  gap: var(--space-sm);
+  gap: var(--space-xs);
   padding: 0;
   margin: 0;
+  width: 100%;
 }
 
 nav a {
-  display: inline-block;
+  display: block;
+  text-align: center;
+  width: 100%;
   padding: var(--space-xs) var(--space-md);
   color: var(--color-muted);
   text-decoration: none;
@@ -102,13 +106,12 @@ nav a:focus {
 }
 
 main {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 4rem 2rem;
+  width: 100%;
+  padding: 2rem 1rem;
 }
 
 section {
-  margin-bottom: 6rem;
+  margin-bottom: 4rem;
 }
 
 h1,
@@ -124,6 +127,7 @@ h1 {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  text-align: center;
 }
 
 h2 {
@@ -132,6 +136,7 @@ h2 {
   display: flex;
   align-items: center;
   gap: var(--space-md);
+  justify-content: center;
 }
 
 h3 {
@@ -145,14 +150,26 @@ h2::after {
   flex-grow: 1;
   background: var(--color-muted);
   opacity: 0.3;
+  max-width: 100px;
+}
+
+h2::before {
+  content: '';
+  height: 1px;
+  flex-grow: 1;
+  background: var(--color-muted);
+  opacity: 0.3;
+  max-width: 100px;
 }
 
 /* Hero Section */
 .hero {
-  min-height: 60vh;
+  min-height: 40vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .hero p {
@@ -164,8 +181,8 @@ h2::after {
 /* About Section */
 .about-grid {
   display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  gap: 3rem;
+  grid-template-columns: 1fr;
+  gap: 2rem;
   align-items: start;
 }
 
@@ -176,6 +193,7 @@ h2::after {
   list-style: none;
   padding: 0;
   margin-top: var(--space-md);
+  justify-content: center;
 }
 
 .skill-tags li {
@@ -193,6 +211,8 @@ h2::after {
 
 .profile-container {
   position: relative;
+  max-width: 300px;
+  margin: 0 auto;
 }
 
 .profile-container img {
@@ -206,6 +226,10 @@ h2::after {
 .profile-container:hover img {
   filter: grayscale(0%);
   transform: translateY(-5px);
+}
+
+.about-text {
+  text-align: center;
 }
 
 /* Projects Grid */
@@ -264,10 +288,9 @@ h2::after {
 /* Form Styles */
 .contact-form {
   background: var(--color-surface);
-  padding: var(--space-2xl);
+  padding: var(--space-lg);
   border-radius: var(--radius-lg);
-  max-width: 600px;
-  margin: 0 auto;
+  width: 100%;
 }
 
 fieldset {
@@ -281,6 +304,7 @@ legend {
   font-weight: 600;
   margin-bottom: var(--space-lg);
   color: var(--color-primary);
+  text-align: center;
 }
 
 .form-group {
@@ -338,6 +362,7 @@ button[type="submit"] {
   cursor: pointer;
   transition: var(--transition-normal);
   margin-top: var(--space-md);
+  width: 100%;
 }
 
 button[type="submit"]:hover {
@@ -366,33 +391,103 @@ button[type="submit"]:hover {
 
 footer {
   text-align: center;
-  padding: var(--space-3xl) var(--space-xl);
+  padding: var(--space-xl) var(--space-md);
   color: var(--color-muted);
   border-top: 1px solid var(--color-border);
 }
 
-@media (max-width: 639px) {
+/* ========================================
+   TABLET (640px ve uzeri)
+   ======================================== */
+@media (min-width: 640px) {
   header {
-    flex-direction: column;
-    gap: var(--space-sm);
-    padding: var(--space-md);
+    flex-direction: row;
+    justify-content: space-between;
+    padding: var(--space-md) var(--space-xl);
   }
 
   nav ul {
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    gap: var(--space-xs);
+    flex-direction: row;
+    gap: var(--space-sm);
+    width: auto;
   }
 
   nav a {
-    display: block;
-    text-align: center;
-    width: 100%;
+    width: auto;
+  }
+
+  main {
+    padding: 4rem 2rem;
+  }
+
+  section {
+    margin-bottom: 6rem;
+  }
+
+  h1 {
+    text-align: left;
+  }
+
+  h2 {
+    justify-content: flex-start;
+  }
+
+  h2::before {
+    display: none;
+  }
+
+  .hero {
+    align-items: flex-start;
+    text-align: left;
+    min-height: 60vh;
   }
 
   .about-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 3rem;
+  }
+
+  .profile-container {
+    margin: 0;
+  }
+
+  .about-text {
+    text-align: left;
+  }
+
+  .skill-tags {
+    justify-content: flex-start;
+  }
+
+  .contact-form {
+    padding: var(--space-2xl);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  legend {
+    text-align: left;
+  }
+
+  button[type="submit"] {
+    width: auto;
+  }
+}
+
+/* ========================================
+   MASAUSTU (1024px ve uzeri)
+   ======================================== */
+@media (min-width: 1024px) {
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  section {
+    margin-bottom: 8rem;
+  }
+
+  .projects-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
