@@ -64,9 +64,22 @@ function App() {
                 alanlarında projeler yaptım.Anlık olarak siber güvenlik alanında kendimi geliştirmeyi hedefliyorum .Takım çalışmasına
                 uyumlu, ekip liderliği konusunda başarılı ve teknolojinin her alanında kendini geliştirmeye adayan bir mühendis adayıyım.
               </p>
-              <p style={{ marginTop: '1rem' }}>
-                Bu web sitesi, Web Tasarımı ve Programlama dersi LAB-2 kapsamında
-                erişilebilirlik ve semantik yapı kurallarına uygun olarak oluşturulmuştur.
+
+              <ul className="skill-tags" role="list" aria-label="Beceri etiketleri">
+                <li>HTML5</li>
+                <li>CSS3</li>
+                <li>JavaScript</li>
+                <li>React</li>
+                <li>TypeScript</li>
+                <li>Java</li>
+                <li>Kotlin</li>
+                <li>C#</li>
+                <li>Git</li>
+              </ul>
+
+              <p style={{ marginTop: '1.5rem' }}>
+                Bu web sitesi, Web Tasarımı ve Programlama dersi LAB-3 kapsamında
+                modern CSS (Flexbox/Grid/Tokens) kurallarına uygun olarak güncellenmiştir.
               </p>
             </div>
           </div>
