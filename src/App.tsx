@@ -1,15 +1,55 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 import profilePhoto from './photos/IMG_20240608_2219153.jpg'
 import Button from './components/Button'
 import Input from './components/Input'
 import Card from './components/Card'
 import Alert from './components/Alert'
+import type { Project, Category, SortField, SortOrder } from './types/project'
+import { fetchProjects } from './services/projectService'
+import { applyFilters } from './utils/projectHelpers'
 
 function App() {
   const [darkMode, setDarkMode] = useState(false)
   const [formStatus, setFormStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' })
+
+  // --- LAB-5: Proje state'leri ---
+  const [projects, setProjects] = useState<Project[]>([])
+  const [search, setSearch] = useState('')
+  const [category, setCategory] = useState<Category | 'all'>('all')
+  const [sortField, setSortField] = useState<SortField>('year')
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  // --- LAB-5: Veri çekme (useEffect + async/await) ---
+  useEffect(() => {
+    async function load() {
+      try {
+        setLoading(true)
+        setError(null)
+        const data = await fetchProjects()
+        setProjects(data)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Bilinmeyen hata')
+      } finally {
+        setLoading(false)
+      }
+    }
+    load()
+  }, [])
+
+  // --- LAB-5: Filtrelenmiş veri (derived state) ---
+  const filtered = applyFilters(projects, search, category, sortField, sortOrder)
+
+  const categories: (Category | 'all')[] = ['all', 'frontend', 'fullstack', 'backend']
+  const categoryLabels: Record<Category | 'all', string> = {
+    all: 'Tümü',
+    frontend: 'Frontend',
+    fullstack: 'Full Stack',
+    backend: 'Backend',
+  }
 
   const toggleDark = () => {
     const newMode = !darkMode
@@ -23,27 +63,6 @@ function App() {
     setFormStatus('success')
     setTimeout(() => setFormStatus('idle'), 4000)
   }
-
-  const projects = [
-    {
-      title: 'E-Ticaret Platformu',
-      desc: 'Modern bir alışveriş deneyimi sunan, React ve TypeScript ile geliştirilmiş responsive web uygulaması.',
-      image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=400&auto=format&fit=crop',
-      alt: 'E-Ticaret Sitesi projesi ekran görüntüsü',
-    },
-    {
-      title: 'Hava Durumu Paneli',
-      desc: 'Global hava durumu verilerini anlık olarak çeken ve görselleştiren dinamik bir dashboard uygulaması.',
-      image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=400&auto=format&fit=crop',
-      alt: 'Hava Durumu Uygulaması projesi ekran görüntüsü',
-    },
-    {
-      title: 'Blog Portalı',
-      desc: 'İçerik yönetim sistemi ve kullanıcı etkileşimi odaklı, semantik yapılı blog platformu.',
-      image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?q=80&w=400&auto=format&fit=crop',
-      alt: 'Blog Portalı projesi ekran görüntüsü',
-    },
-  ]
 
   const skills = ['HTML5', 'CSS3', 'JavaScript', 'React', 'TypeScript', 'Java', 'Kotlin', 'C#', 'Git']
 
@@ -176,7 +195,7 @@ function App() {
           </div>
         </section>
 
-        {/* Projelerim */}
+        {/* Projelerim — LAB-5: JSON'dan fetch, filtreleme ve sıralama */}
         <section
           id="projeler"
           className="py-16 px-4"
@@ -189,26 +208,126 @@ function App() {
             >
               Projelerim
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projects.map((project) => (
-                <Card
-                  key={project.title}
-                  variant="elevated"
-                  title={project.title}
-                  image={project.image}
-                  imageAlt={project.alt}
-                  footer={
-                    <Button size="sm" variant="secondary">
-                      Detaylar
-                    </Button>
-                  }
+
+            {/* HATA DURUMU */}
+            {error && (
+              <div className="mb-6">
+                <Alert variant="error" title="Veri Yüklenemedi">
+                  {error}
+                </Alert>
+              </div>
+            )}
+
+            {/* FİLTRELER */}
+            <div className="flex flex-col sm:flex-row gap-4 mb-8">
+              {/* Arama */}
+              <Input
+                id="search"
+                placeholder="Proje ara... (başlık, açıklama, teknoloji)"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+
+              {/* Kategori butonları */}
+              <div className="flex gap-2 flex-wrap">
+                {categories.map((cat) => (
+                  <Button
+                    key={cat}
+                    variant={category === cat ? 'primary' : 'ghost'}
+                    size="sm"
+                    onClick={() => setCategory(cat)}
+                  >
+                    {categoryLabels[cat]}
+                  </Button>
+                ))}
+              </div>
+
+              {/* Sıralama */}
+              <div className="flex gap-2 shrink-0">
+                <select
+                  value={sortField}
+                  onChange={(e) => setSortField(e.target.value as SortField)}
+                  className="border border-gray-600 rounded-lg px-3 py-2 bg-gray-800 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  aria-label="Sıralama alanı"
                 >
-                  <p className="text-sm leading-relaxed">{project.desc}</p>
-                </Card>
-              ))}
+                  <option value="year">Yıl</option>
+                  <option value="title">Başlık</option>
+                </select>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSortOrder((o) => (o === 'asc' ? 'desc' : 'asc'))}
+                >
+                  {sortOrder === 'asc' ? 'A→Z' : 'Z→A'}
+                </Button>
+              </div>
             </div>
+
+            {/* YÜKLENİYOR */}
+            {loading && (
+              <p className="text-center text-slate-400 py-8">Yükleniyor...</p>
+            )}
+
+            {/* SONUÇ YOK */}
+            {!loading && filtered.length === 0 && (
+              <p className="text-center text-slate-400 py-8">
+                Eşleşen proje bulunamadı.
+              </p>
+            )}
+
+            {/* PROJE LİSTESİ */}
+            {!loading && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filtered.map((project) => (
+                  <Card
+                    key={project.id}
+                    variant="elevated"
+                    title={project.title}
+                    image={project.image}
+                    imageAlt={`${project.title} ekran görüntüsü`}
+                    footer={
+                      <div className="flex gap-2">
+                        {project.demoUrl && (
+                          <Button size="sm" variant="primary" onClick={() => window.open(project.demoUrl, '_blank')}>
+                            Demo
+                          </Button>
+                        )}
+                        {project.sourceUrl && (
+                          <Button size="sm" variant="secondary" onClick={() => window.open(project.sourceUrl, '_blank')}>
+                            Kaynak
+                          </Button>
+                        )}
+                      </div>
+                    }
+                  >
+                    <p className="text-sm mb-3 leading-relaxed">{project.description}</p>
+                    <div className="flex flex-wrap gap-1 mb-2">
+                      {project.tech.map((t) => (
+                        <span
+                          key={t}
+                          className="bg-blue-900 text-blue-200 text-xs px-2 py-0.5 rounded-full"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="text-xs text-slate-400">
+                      {project.year} · {project.category}
+                    </p>
+                  </Card>
+                ))}
+              </div>
+            )}
+
+            {/* SONUÇ SAYISI */}
+            {!loading && (
+              <p className="text-sm text-slate-400 mt-6 text-center">
+                {filtered.length} / {projects.length} proje gösteriliyor
+              </p>
+            )}
           </div>
         </section>
+
 
         {/* İletişim */}
         <section
